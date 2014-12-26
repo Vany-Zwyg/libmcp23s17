@@ -153,8 +153,13 @@ int mcp23s17_enable_interrupts()
     close(fd);
 
     snprintf(str_filenm, sizeof(str_filenm), "/sys/class/gpio/gpio%d/direction", GPIO_INTERRUPT_PIN);
-    if ((fd = open(str_filenm, O_WRONLY)) < 0)
-        return -1;
+    if ((fd = open(str_filenm, O_WRONLY)) < 0){
+    	/*sometime the export fontion is too slow te creat the gpio25 directories
+    	I'm not a good progamer so if you see a better way to make this do it*/
+    	usleep(100);					
+    	if ((fd = open(str_filenm, O_WRONLY)) < 0)
+        	return -1;
+    }
 
     write(fd, "in", 3);
     close(fd);
